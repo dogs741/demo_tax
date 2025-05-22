@@ -2,12 +2,10 @@ package com.demo.app.controller;
 
 import com.demo.app.dto.request.ShoppingInfo;
 import com.demo.app.service.TaxCalculateService;
+import com.demo.app.vo.ReceiptItemVO;
 import com.demo.app.vo.ReceiptVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -36,6 +34,11 @@ public class TaxController {
         return calculateTax("useCase3.yaml");
     }
 
+    @PostMapping
+    public ReceiptVO calculateTaxByRequest(@RequestBody ShoppingInfo shoppingInfo) {
+        return process(shoppingInfo);
+    }
+
     private ReceiptVO calculateTax(String fileName) {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
         if (is == null) {
@@ -47,6 +50,29 @@ public class TaxController {
         Yaml yaml = new Yaml(constructor);
 
         ShoppingInfo info = yaml.load(is);
-        return taxCalculateService.generateReceipt(info);
+        return process(info);
+    }
+
+    private ReceiptVO process(ShoppingInfo info) {
+        ReceiptVO receiptVO = taxCalculateService.generateReceipt(info);
+        System.out.printf("%-20s %7s %4s%n", "item", "price", "qty");
+        for(ReceiptItemVO item : receiptVO.getItemList()) {
+            System.out.printf(
+                    "%-20s $%6.2f %4d%n",
+                    item.getItem(),
+                    item.getPrice(),
+                    item.getQty()
+            );
+        }
+
+        String formattedSubtotal = String.format("$%7.2f", receiptVO.getSubTotal());
+        String formattedTax = String.format("$%7.2f", receiptVO.getTax());
+        String formattedTotal = String.format("$%7.2f", receiptVO.getTotal());
+
+        System.out.printf("%-24s %s%n", "subtotal:", formattedSubtotal);
+        System.out.printf("%-24s %s%n", "tax:", formattedTax);
+        System.out.printf("%-24s %s%n", "total:", formattedTotal);
+
+        return receiptVO;
     }
 }

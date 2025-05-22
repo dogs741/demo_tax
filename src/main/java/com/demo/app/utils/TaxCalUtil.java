@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 public class TaxCalUtil {
     public static BigDecimal process(ShoppingItem item, BigDecimal rate) {
         Integer quantity = item.getQuantity();
-        BigDecimal price = item.getPrices();
+        BigDecimal price = item.getPrice();
         BigDecimal originTax = price.multiply(new BigDecimal(quantity)).multiply(rate);
         return originTax
                 .divide(new BigDecimal("0.05"), 0, RoundingMode.UP)

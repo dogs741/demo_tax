@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -36,8 +35,8 @@ public class TaxCalculateServiceImpl implements TaxCalculateService {
         List<ReceiptItemVO> receiptItemList = new ArrayList<>();
 
         for (ShoppingItem shoppingItem : itemList) {
-            receiptItemList.add(ReceiptItemVO.builder().item(shoppingItem.getItemName()).qty(shoppingItem.getQuantity()).price(shoppingItem.getPrices()).build());
-            subTotal = subTotal.add(new BigDecimal(shoppingItem.getQuantity()).multiply(shoppingItem.getPrices()));
+            receiptItemList.add(ReceiptItemVO.builder().item(shoppingItem.getItemName()).qty(shoppingItem.getQuantity()).price(shoppingItem.getPrice()).build());
+            subTotal = subTotal.add(new BigDecimal(shoppingItem.getQuantity()).multiply(shoppingItem.getPrice()));
             tax = tax.add(taxFactory.process(shoppingItem));
         }
 
