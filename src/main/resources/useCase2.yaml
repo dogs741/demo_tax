@@ -1,0 +1,8 @@
+location: NY
+itemList:
+  - itemName: book
+    quantity: 1
+    prices: 17.99
+  - itemName: pencils
+    quantity: 3
+    prices: 2.99

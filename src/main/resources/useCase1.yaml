@@ -1,0 +1,8 @@
+location: CA
+itemList:
+  - itemName: book
+    quantity: 1
+    prices: 17.99
+  - itemName: potato chips
+    quantity: 1
+    prices: 3.99
